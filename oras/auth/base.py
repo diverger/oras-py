@@ -69,9 +69,13 @@ class AuthBackend:
         :param hostname: the registry hostname to look for
         :type hostname: str
         """
+        logger.debug(f"Debug: Looking for auth for hostname: {hostname}")
+        logger.debug(f"Debug: Available auth hostnames: {list(self._auths.keys())}")
+
         # Note that the hostname can be defined without a token
         if hostname in self._auths:
             auth = self._auths[hostname].get("auth")
+            logger.debug(f"Debug: Found auth entry for {hostname}, has auth field: {bool(auth)}")
 
             # Case 1: they use a credsStore we don't know how to read
             if not auth and "credsStore" in self._auths[hostname]:
@@ -82,9 +86,12 @@ class AuthBackend:
 
             # Case 2: no auth there (wonky file)
             elif not auth:
+                logger.debug(f"Debug: No auth field found for {hostname}")
                 return False
             self._basic_auth = auth
+            logger.debug(f"Debug: Successfully set _basic_auth for {hostname}")
             return True
+        logger.debug(f"Debug: No auth entry found for hostname {hostname}")
         return False
 
     @decorator.ensure_container

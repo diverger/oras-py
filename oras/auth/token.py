@@ -74,21 +74,31 @@ class TokenAuth(AuthBackend):
 
         h = auth_utils.parse_auth_header(authHeaderRaw)
 
-        # if no basic auth, try by request an anonymous token
-        if not hasattr(self, "_basic_auth"):
+        # Debug: Check what auth attributes we have
+        logger.debug(f"Debug: hasattr(self, '_basic_auth'): {hasattr(self, '_basic_auth')}")
+        if hasattr(self, "_basic_auth"):
+            logger.debug(f"Debug: self._basic_auth is set: {bool(self._basic_auth)}")
+        else:
+            logger.debug("Debug: self._basic_auth attribute does not exist")
+
+        # Check if we have basic auth credentials available
+        if hasattr(self, "_basic_auth") and self._basic_auth:
+            logger.debug("Debug: Using basic auth to request token")
+            # basic auth is available, try using auth token
+            token = self.request_token(h)
+            if token:
+                self.token = token
+                headers["Authorization"] = "Bearer %s" % self.token
+                return headers, True
+        else:
+            logger.debug("Debug: No basic auth available, trying anonymous token")
+            # if no basic auth, try by request an anonymous token
             anon_token = self.request_anonymous_token(h)
             if anon_token:
                 logger.debug("Successfully obtained anonymous token!")
                 self.token = anon_token
                 headers["Authorization"] = "Bearer %s" % self.token
                 return headers, True
-
-        # basic auth is available, try using auth token
-        token = self.request_token(h)
-        if token:
-            self.token = token
-            headers["Authorization"] = "Bearer %s" % self.token
-            return headers, True
 
         logger.error(
             "This endpoint requires a token. Please use "
