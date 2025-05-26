@@ -57,6 +57,8 @@ class TokenAuth(AuthBackend):
         :param original: original response to get the Www-Authenticate header
         :type original: requests.Response
         """
+        logger.error(f"Debug: authenticate_request called, _auths loaded: {hasattr(self, '_auths') and bool(getattr(self, '_auths', None))}")
+
         headers = headers or {}
         if refresh:
             self.token = None

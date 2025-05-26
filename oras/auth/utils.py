@@ -21,10 +21,15 @@ def load_configs(configs: Optional[List[str]] = None):
     configs = configs or []
     default_config = oras.utils.find_docker_config()
 
+    logger.error(f"Debug: load_configs called with configs: {configs}")
+    logger.error(f"Debug: default_config found: {default_config}")
+
     # Add the default docker config
     if default_config:
         configs.append(default_config)
     configs = set(configs)  # type: ignore
+
+    logger.error(f"Debug: final configs to load: {configs}")
 
     # Load configs until we find our registry hostname
     auths = {}
@@ -32,8 +37,14 @@ def load_configs(configs: Optional[List[str]] = None):
         if not os.path.exists(config):
             logger.warning(f"{config} does not exist.")
             continue
+        logger.error(f"Debug: loading config from {config}")
         cfg = oras.utils.read_json(config)
+        logger.error(f"Debug: config content keys: {list(cfg.keys()) if cfg else 'None'}")
+        if cfg and "auths" in cfg:
+            logger.error(f"Debug: auths found in config: {list(cfg['auths'].keys())}")
         auths.update(cfg.get("auths", {}))
+
+    logger.error(f"Debug: final auths loaded: {list(auths.keys())}")
     return auths
 
 
