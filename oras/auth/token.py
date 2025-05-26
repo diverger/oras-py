@@ -74,12 +74,12 @@ class TokenAuth(AuthBackend):
 
         h = auth_utils.parse_auth_header(authHeaderRaw)
 
-        # Debug: Check what auth attributes we have
-        logger.debug(f"Debug: hasattr(self, '_basic_auth'): {hasattr(self, '_basic_auth')}")
+        # Debug: Check what auth attributes we have (using error level to ensure visibility)
+        logger.error(f"Debug: hasattr(self, '_basic_auth'): {hasattr(self, '_basic_auth')}")
         if hasattr(self, "_basic_auth"):
-            logger.debug(f"Debug: self._basic_auth is set: {bool(self._basic_auth)}")
+            logger.error(f"Debug: self._basic_auth is set: {bool(self._basic_auth)}")
         else:
-            logger.debug("Debug: self._basic_auth attribute does not exist")
+            logger.error("Debug: self._basic_auth attribute does not exist")
 
         # Check if we have basic auth credentials available
         if hasattr(self, "_basic_auth") and self._basic_auth:
