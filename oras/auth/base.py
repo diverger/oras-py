@@ -102,7 +102,6 @@ class AuthBackend:
         """
         if not self._auths:
             self._auths = auth_utils.load_configs(configs)
-
         for registry in oras.utils.iter_localhosts(container.registry):  # type: ignore
             if self._load_auth(registry):
                 return
