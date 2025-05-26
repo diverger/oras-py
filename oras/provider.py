@@ -955,7 +955,15 @@ class Registry:
         headers = {"Accept": ";".join(allowed_media_type)}
 
         get_manifest = f"{self.prefix}://{container.manifest_url()}"  # type: ignore
+        logger.error(f"Debug: About to request manifest from: {get_manifest}")
+        logger.error(f"Debug: Request headers: {headers}")
+        logger.error(f"Debug: Auth object has _auths loaded: {hasattr(self.auth, '_auths') and bool(self.auth._auths)}")
+        
         response = self.do_request(get_manifest, "GET", headers=headers)
+        logger.error(f"Debug: Response status: {response.status_code}")
+        if response.status_code != 200:
+            logger.error(f"Debug: Response text: {response.text}")
+        
         self._check_200_response(response)
         manifest = response.json()
         jsonschema.validate(manifest, schema=oras.schemas.manifest)
