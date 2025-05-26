@@ -946,6 +946,10 @@ class Registry:
         :param allowed_media_type: one or more allowed media types
         :type allowed_media_type: str
         """
+        # Load authentication configs for the container's registry
+        # This ensures credentials are available for authenticated registries
+        self.auth.load_configs(container)
+
         if not allowed_media_type:
             allowed_media_type = [oras.defaults.default_manifest_media_type]
         headers = {"Accept": ";".join(allowed_media_type)}
