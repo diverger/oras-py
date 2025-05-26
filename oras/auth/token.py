@@ -57,8 +57,6 @@ class TokenAuth(AuthBackend):
         :param original: original response to get the Www-Authenticate header
         :type original: requests.Response
         """
-        logger.error(f"Debug: authenticate_request called, _auths loaded: {hasattr(self, '_auths') and bool(getattr(self, '_auths', None))}")
-
         headers = headers or {}
         if refresh:
             self.token = None
@@ -76,16 +74,8 @@ class TokenAuth(AuthBackend):
 
         h = auth_utils.parse_auth_header(authHeaderRaw)
 
-        # Debug: Check what auth attributes we have (using error level to ensure visibility)
-        logger.error(f"Debug: hasattr(self, '_basic_auth'): {hasattr(self, '_basic_auth')}")
-        if hasattr(self, "_basic_auth"):
-            logger.error(f"Debug: self._basic_auth is set: {bool(self._basic_auth)}")
-        else:
-            logger.error("Debug: self._basic_auth attribute does not exist")
-
         # Check if we have basic auth credentials available
         if hasattr(self, "_basic_auth") and self._basic_auth:
-            logger.debug("Debug: Using basic auth to request token")
             # basic auth is available, try using auth token
             token = self.request_token(h)
             if token:
@@ -93,7 +83,6 @@ class TokenAuth(AuthBackend):
                 headers["Authorization"] = "Bearer %s" % self.token
                 return headers, True
         else:
-            logger.debug("Debug: No basic auth available, trying anonymous token")
             # if no basic auth, try by request an anonymous token
             anon_token = self.request_anonymous_token(h)
             if anon_token:

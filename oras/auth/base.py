@@ -69,13 +69,9 @@ class AuthBackend:
         :param hostname: the registry hostname to look for
         :type hostname: str
         """
-        logger.error(f"Debug: Looking for auth for hostname: {hostname}")
-        logger.error(f"Debug: Available auth hostnames: {list(self._auths.keys())}")
-
         # Note that the hostname can be defined without a token
         if hostname in self._auths:
             auth = self._auths[hostname].get("auth")
-            logger.error(f"Debug: Found auth entry for {hostname}, has auth field: {bool(auth)}")
 
             # Case 1: they use a credsStore we don't know how to read
             if not auth and "credsStore" in self._auths[hostname]:
@@ -86,12 +82,9 @@ class AuthBackend:
 
             # Case 2: no auth there (wonky file)
             elif not auth:
-                logger.error(f"Debug: No auth field found for {hostname}")
                 return False
             self._basic_auth = auth
-            logger.error(f"Debug: Successfully set _basic_auth for {hostname}")
             return True
-        logger.error(f"Debug: No auth entry found for hostname {hostname}")
         return False
 
     @decorator.ensure_container
@@ -107,22 +100,12 @@ class AuthBackend:
         :param configs: list of configs to read (optional)
         :type configs: list
         """
-        logger.error(f"Debug: load_configs called for container.registry: {container.registry}")
-        logger.error(f"Debug: configs parameter: {configs}")
-
         if not self._auths:
             self._auths = auth_utils.load_configs(configs)
-            logger.error(f"Debug: Loaded _auths from configs: {list(self._auths.keys()) if self._auths else 'None'}")
-        else:
-            logger.error(f"Debug: _auths already loaded: {list(self._auths.keys())}")
 
-        logger.error(f"Debug: Checking registries via iter_localhosts for: {container.registry}")
         for registry in oras.utils.iter_localhosts(container.registry):  # type: ignore
-            logger.error(f"Debug: Trying registry: {registry}")
             if self._load_auth(registry):
-                logger.error(f"Debug: Successfully loaded auth for registry: {registry}")
                 return
-        logger.error(f"Debug: No auth found for any registry variants of: {container.registry}")
 
     def set_token_auth(self, token: str):
         """
