@@ -109,13 +109,13 @@ class AuthBackend:
         """
         logger.error(f"Debug: load_configs called for container.registry: {container.registry}")
         logger.error(f"Debug: configs parameter: {configs}")
-        
+
         if not self._auths:
             self._auths = auth_utils.load_configs(configs)
             logger.error(f"Debug: Loaded _auths from configs: {list(self._auths.keys()) if self._auths else 'None'}")
         else:
             logger.error(f"Debug: _auths already loaded: {list(self._auths.keys())}")
-            
+
         logger.error(f"Debug: Checking registries via iter_localhosts for: {container.registry}")
         for registry in oras.utils.iter_localhosts(container.registry):  # type: ignore
             logger.error(f"Debug: Trying registry: {registry}")
