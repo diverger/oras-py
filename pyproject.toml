@@ -1,5 +1,4 @@
 [tool.black]
-profile = "black"
 exclude = '^env/'
 
 [tool.isort]
