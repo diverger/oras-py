@@ -54,7 +54,6 @@ def test_auth_config_loading():
     # Create registry and replace auth with our test version
     registry = Registry()
     test_auth = TestAuth()
-    registry.auth = test_auth
 
     # Test containers - including diverger's actual image
     test_containers = [
