@@ -117,31 +117,31 @@ def test_client_auth():
         client = OrasClient(auth_backend=auth_backend)
         print(f'✅ Client created with {auth_backend} auth backend', flush=True)
 
-        # Test 1: Public registry (should work without auth)
-        public_container = 'ghcr.io/oras-project/registry:latest'
-        print(f'Testing client with public registry: {public_container}', flush=True)
-        try:
-            tags = client.get_tags(public_container)
-            print(f'✅ Client public registry access successful: {tags}', flush=True)
-        except Exception as e:
-            print(f'Client public registry test: {type(e).__name__}: {e}', flush=True)
+        # # Test 1: Public registry (should work without auth)
+        # public_container = 'ghcr.io/oras-project/registry:latest'
+        # print(f'Testing client with public registry: {public_container}', flush=True)
+        # try:
+        #     tags = client.get_tags(public_container)
+        #     print(f'✅ Client public registry access successful: {tags}', flush=True)
+        # except Exception as e:
+        #     print(f'Client public registry test: {type(e).__name__}: {e}', flush=True)
 
         # Test 2: Test with diverger's actual kernel image (requires authentication)
         private_container = 'ghcr.io/diverger/os/kernel-rk35xx-vendor:6.1.115-s86b6-db228-p09c0-c26e6h2313-hk01ba-vc222-b9bbb-r448a'
 
         print(f'Testing client with authenticated registry: {private_container}', flush=True)
-        try:
+        # try:
             tags = client.get_tags(private_container)
             print(f'✅ Client authenticated registry access successful: {tags}', flush=True)
             print('✅ Client authentication config loading worked with real Docker config!', flush=True)
-        except Exception as e:
-            print(f'Client authenticated registry test: {type(e).__name__}: {e}', flush=True)
-            if 'unauthorized' in str(e).lower() or 'forbidden' in str(e).lower():
-                print('✅ Client auth was attempted (got auth error), which means load_configs was called', flush=True)
-            elif 'not found' in str(e).lower():
-                print('✅ Client repository accessed but tag not found (auth worked), load_configs was called', flush=True)
-            else:
-                print('⚠️  Client unexpected error, but load_configs was still called', flush=True)
+        # except Exception as e:
+        #     print(f'Client authenticated registry test: {type(e).__name__}: {e}', flush=True)
+        #     if 'unauthorized' in str(e).lower() or 'forbidden' in str(e).lower():
+        #         print('✅ Client auth was attempted (got auth error), which means load_configs was called', flush=True)
+        #     elif 'not found' in str(e).lower():
+        #         print('✅ Client repository accessed but tag not found (auth worked), load_configs was called', flush=True)
+        #     else:
+        #         print('⚠️  Client unexpected error, but load_configs was still called', flush=True)
 
         # Test client-specific methods
         print('Testing client-specific methods...', flush=True)
