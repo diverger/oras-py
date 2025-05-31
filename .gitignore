@@ -8,5 +8,6 @@ __pycache__
 .python-version
 .venv
 .vscode
+.vscode-ctags
 build
 dist
