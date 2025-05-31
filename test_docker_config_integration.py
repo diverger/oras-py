@@ -8,7 +8,7 @@ import json
 sys.path.insert(0, '.')
 
 from oras.provider import Registry
-from oras.auth.base import AuthBase
+from oras.auth.base import AuthBackend
 
 def test_docker_config_exists():
     """Verify Docker config file exists and has authentication data"""
@@ -32,7 +32,7 @@ def test_docker_config_exists():
         print('⚠️  No auths section in Docker config')
         return False
 
-class TestAuth(AuthBase):
+class TestAuth(AuthBackend):
     """Test auth class to monitor load_configs calls"""
     def __init__(self):
         super().__init__()
