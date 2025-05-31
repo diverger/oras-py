@@ -354,7 +354,7 @@ class Registry:
         :type N: Optional[int]
         """
         # Load authentication configs for the container's registry
-        # self.auth.load_configs(container)
+        self.auth.load_configs(container)
 
         retrieve_all = N is None
         tags_url = f"{self.prefix}://{container.tags_url(N=N)}"  # type: ignore
