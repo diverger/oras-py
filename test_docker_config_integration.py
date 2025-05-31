@@ -131,9 +131,9 @@ def test_client_auth():
 
         print(f'Testing client with authenticated registry: {private_container}', flush=True)
         # try:
-            tags = client.get_tags(private_container)
-            print(f'✅ Client authenticated registry access successful: {tags}', flush=True)
-            print('✅ Client authentication config loading worked with real Docker config!', flush=True)
+        tags = client.get_tags(private_container)
+        print(f'✅ Client authenticated registry access successful: {tags}', flush=True)
+        print('✅ Client authentication config loading worked with real Docker config!', flush=True)
         # except Exception as e:
         #     print(f'Client authenticated registry test: {type(e).__name__}: {e}', flush=True)
         #     if 'unauthorized' in str(e).lower() or 'forbidden' in str(e).lower():
