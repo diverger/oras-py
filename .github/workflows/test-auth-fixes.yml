@@ -9,7 +9,7 @@ on:
       - 'test_docker_config_integration.py'
 
 env:
-  GHCR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  GHCR_TOKEN: ${{ secrets.GH_ACCESS_TOKEN }}
 
 jobs:
   test-docker-config-loading:
