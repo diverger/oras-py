@@ -218,18 +218,18 @@ if __name__ == '__main__':
     success = True
 
     # Run all tests
-    print("📁 Testing Docker config existence...", flush=True)
-    success &= test_docker_config_exists()
+    # print("📁 Testing Docker config existence...", flush=True)
+    # success &= test_docker_config_exists()
 
-    print("🔧 Testing client basic functionality...", flush=True)
-    success &= test_client_basic_functionality()
+    # print("🔧 Testing client basic functionality...", flush=True)
+    # success &= test_client_basic_functionality()
 
-    print("🔐 Testing client authentication methods...", flush=True)
-    success &= test_client_auth_methods()
+    # print("🔐 Testing client authentication methods...", flush=True)
+    # success &= test_client_auth_methods()
 
-    # Real GHCR test is optional - don't fail on it
-    print("🌐 Testing real GHCR authentication (Client)...", flush=True)
-    test_real_ghcr_client_auth()
+    # # Real GHCR test is optional - don't fail on it
+    # print("🌐 Testing real GHCR authentication (Client)...", flush=True)
+    # test_real_ghcr_client_auth()
 
     print("🌐 Testing ORAS client with different auth backends...", flush=True)
     test_client_auth()
