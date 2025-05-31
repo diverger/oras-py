@@ -316,6 +316,9 @@ class Registry:
         :param tag: name of tag to delete
         :type tag: str
         """
+        # Load authentication configs for the container's registry
+        self.auth.load_configs(container)
+
         logger.debug(f"Deleting tag {tag} for {container}")
 
         head_url = f"{self.prefix}://{container.manifest_url(tag)}"  # type: ignore
@@ -350,6 +353,9 @@ class Registry:
         :param N: limit number of tags, None for all (default)
         :type N: Optional[int]
         """
+        # Load authentication configs for the container's registry
+        self.auth.load_configs(container)
+
         retrieve_all = N is None
         tags_url = f"{self.prefix}://{container.tags_url(N=N)}"  # type: ignore
         tags: List[str] = []
@@ -424,6 +430,9 @@ class Registry:
         :param head: use head to determine if blob exists
         :type head: bool
         """
+        # Load authentication configs for the container's registry
+        self.auth.load_configs(container)
+
         method = "GET" if not head else "HEAD"
         blob_url = f"{self.prefix}://{container.get_blob_url(digest)}"  # type: ignore
         return self.do_request(blob_url, method, headers=self.headers, stream=stream)
@@ -570,6 +579,9 @@ class Registry:
         :param container: the container to determine where to look for layer existence
         :type container: oras.container.Container
         """
+        # Load authentication configs for the container's registry
+        self.auth.load_configs(container)
+
         blob_url = container.get_blob_url(layer["digest"])
         response = self.do_request(f"{self.prefix}://{blob_url}", "HEAD")
         return response.status_code == 200
