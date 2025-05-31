@@ -129,9 +129,13 @@ class TokenAuth(AuthBackend):
             headers["Authorization"] = "Basic %s" % self._basic_auth
             logger.debug("Using Basic Auth for token request.")
         else:
-            logger.debug("No Basic Auth available or configured for token request. Proceeding without Basic Auth header for token endpoint.")
+            logger.debug(
+                "No Basic Auth available or configured for token request. Proceeding without Basic Auth header for token endpoint."
+            )
 
-        logger.debug(f"Requesting auth token for: {h} with header keys: {list(headers.keys())}")
+        logger.debug(
+            f"Requesting auth token for: {h} with header keys: {list(headers.keys())}"
+        )
         authResponse = self.session.get(h.realm, headers=headers, params=params, verify=self._tls_verify)  # type: ignore
 
         if authResponse.status_code != 200:
