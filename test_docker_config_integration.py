@@ -111,7 +111,7 @@ def test_client_auth():
 
     # Test different auth backends
     # for auth_backend in ["token", "basic"]:
-    for auth_backend in ["basic"]:
+    for auth_backend in ["token"]:
         print(f'\n--- Testing {auth_backend} auth backend ---', flush=True)
 
         client = OrasClient(auth_backend=auth_backend)
