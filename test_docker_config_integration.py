@@ -61,28 +61,21 @@ def test_auth_config_loading():
     for container in test_containers:
         print(f'\n--- Testing with container: {container} ---')
 
-        # Test delete_tag
-        print('Testing delete_tag...')
-        try:
-            registry.delete_tag(container)
-        except Exception as e:
-            print(f'Expected error: {type(e).__name__}')
-
-        # Test get_tags
+        # Test get_tags (read-only)
         print('Testing get_tags...')
         try:
             registry.get_tags(container)
         except Exception as e:
             print(f'Expected error: {type(e).__name__}')
 
-        # Test get_blob
+        # Test get_blob (read-only)
         print('Testing get_blob...')
         try:
             registry.get_blob(container, 'sha256:abc123')
         except Exception as e:
             print(f'Expected error: {type(e).__name__}')
 
-        # Test blob_exists
+        # Test blob_exists (read-only)
         print('Testing blob_exists...')
         try:
             registry.blob_exists(container, 'sha256:abc123')
@@ -94,8 +87,8 @@ def test_auth_config_loading():
     print(f'Total load_configs calls: {len(test_auth.load_configs_calls)}')
     print(f'Containers that triggered load_configs: {test_auth.load_configs_calls}')
 
-    # Expect 4 functions × 2 containers = 8 calls
-    expected_calls = 8
+    # Expect 3 functions × 2 containers = 6 calls (get_tags, get_blob, blob_exists)
+    expected_calls = 6
     if len(test_auth.load_configs_calls) >= expected_calls:
         print(f'✅ SUCCESS: Got {len(test_auth.load_configs_calls)} load_configs calls (expected at least {expected_calls})')
         return True
