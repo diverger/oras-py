@@ -133,13 +133,18 @@ def test_real_ghcr_auth():
             return True
 
 if __name__ == '__main__':
+    print("🚀 Starting authentication tests...")
     success = True
 
     # Run all tests
+    print("📁 Testing Docker config existence...")
     success &= test_docker_config_exists()
+    
+    print("🔐 Testing authentication config loading...")
     success &= test_auth_config_loading()
 
     # Real GHCR test is optional - don't fail on it
+    print("🌐 Testing real GHCR authentication...")
     test_real_ghcr_auth()
 
     if success:
