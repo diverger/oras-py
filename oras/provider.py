@@ -764,9 +764,7 @@ class Registry:
 
         # If a custom config path is provided, load those configs
         if config_path:
-            self.auth.load_configs(
-                container, configs=[config_path]
-            )
+            self.auth.load_configs(container, configs=[config_path])
         else:
             # Use the already loaded auths with ensure_auth pattern
             self.auth.ensure_auth_for_container(container)
@@ -911,9 +909,7 @@ class Registry:
 
         # If a custom config path is provided, load those configs
         if config_path:
-            self.auth.load_configs(
-                container, configs=[config_path]
-            )
+            self.auth.load_configs(container, configs=[config_path])
         else:
             # Use the already loaded auths with ensure_auth pattern
             self.auth.ensure_auth_for_container(container)
