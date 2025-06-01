@@ -10,6 +10,7 @@ import requests
 import oras.auth.utils as auth_utils
 import oras.container
 import oras.decorator as decorator
+import oras.utils
 from oras.logger import logger
 from oras.types import container_type
 
@@ -102,6 +103,23 @@ class AuthBackend:
         """
         if not self._auths:
             self._auths = auth_utils.load_configs(configs)
+        for registry in oras.utils.iter_localhosts(container.registry):  # type: ignore
+            if self._load_auth(registry):
+                return
+
+    def ensure_auth_for_container(self, container: container_type):
+        """
+        Ensure authentication is loaded for a specific container's registry.
+        This assumes auths have already been loaded via load_configs or __init__.
+
+        :param container: the parsed container URI with components
+        :type container: oras.container.Container
+        """
+        # Convert to container if needed
+        if not isinstance(container, oras.container.Container):
+            container = self.get_container(container)
+
+        # Try to load auth for this container's registry
         for registry in oras.utils.iter_localhosts(container.registry):  # type: ignore
             if self._load_auth(registry):
                 return

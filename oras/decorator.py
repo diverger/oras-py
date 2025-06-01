@@ -28,6 +28,30 @@ def ensure_container(func):
     return wrapper
 
 
+def ensure_auth(func):
+    """
+    Ensure authentication is loaded for the container's registry.
+    This decorator should be applied after @ensure_container.
+    """
+
+    @wraps(func)
+    def wrapper(cls, *args, **kwargs):
+        # Get the container from the first argument (after ensure_container processing)
+        container = None
+        if "container" in kwargs:
+            container = kwargs["container"]
+        elif args:
+            container = args[0]
+
+        if container and hasattr(cls, "auth"):
+            # Load auth for this specific container's registry without reloading configs
+            cls.auth.ensure_auth_for_container(container)
+
+        return func(cls, *args, **kwargs)
+
+    return wrapper
+
+
 def retry(attempts=5, timeout=2):
     """
     A simple retry decorator
