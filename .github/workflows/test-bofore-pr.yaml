@@ -1,4 +1,4 @@
-name: Manual Auth Optimization Test
+name: Self Test before PR
 on:
   workflow_dispatch:
     inputs:
@@ -91,7 +91,7 @@ jobs:
     steps:
       - name: Test Results Summary
         run: |
-          echo "🎯 AUTH OPTIMIZATION TEST RESULTS"
+          echo "🎯 Self test before PR"
           echo "=================================="
           echo ""
           echo "Basic Functionality: ${{ needs.test-basic-functionality.result }}"
@@ -100,7 +100,7 @@ jobs:
 
           if [[ "${{ needs.test-basic-functionality.result }}" == "success" ]] &&
              [[ "${{ needs.test-auth-functionality.result }}" == "success" ]]; then
-            echo "✅ AUTH OPTIMIZATION READY FOR PR!"
+            echo "✅ READY FOR PR!"
             echo ""
             echo "🚀 All tests passed - ready to merge to upstream!"
           else
