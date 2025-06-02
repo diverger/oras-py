@@ -494,7 +494,6 @@ class Registry:
         return self.upload_blob(blob, container, layer, do_chunked)
 
     @decorator.ensure_container
-    @decorator.ensure_auth
     def download_blob(
         self, container: container_type, digest: str, outfile: str
     ) -> str:
