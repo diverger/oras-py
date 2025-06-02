@@ -115,9 +115,10 @@ class AuthBackend:
         :param container: the parsed container URI with components
         :type container: oras.container.Container
         """
-        # Convert to container if needed
+        # At this point, container should already be a Container object
+        # since the decorators handle conversion
         if not isinstance(container, oras.container.Container):
-            container = self.get_container(container)
+            raise ValueError("Container must be a Container object when ensure_auth_for_container is called")
 
         # Try to load auth for this container's registry
         for registry in oras.utils.iter_localhosts(container.registry):  # type: ignore
