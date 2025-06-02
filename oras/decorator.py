@@ -52,6 +52,51 @@ def ensure_auth(func):
     return wrapper
 
 
+def ensure_container_second_arg(func):
+    """
+    Ensure the second argument is a container, and not a string.
+    This is for PUT/SET-style methods where the pattern is:
+    method(self, data, container, ...)
+    """
+
+    @wraps(func)
+    def wrapper(cls, *args, **kwargs):
+        if "container" in kwargs:
+            kwargs["container"] = cls.get_container(kwargs["container"])
+        elif len(args) >= 2:
+            # Convert the second argument (index 1) to a container
+            container = cls.get_container(args[1])
+            args = (args[0], container, *args[2:])
+        return func(cls, *args, **kwargs)
+
+    return wrapper
+
+
+def ensure_auth_second_arg(func):
+    """
+    Ensure authentication is loaded for the container's registry.
+    This decorator should be applied after @ensure_container_second_arg.
+    For methods where container is the second argument.
+    """
+
+    @wraps(func)
+    def wrapper(cls, *args, **kwargs):
+        # Get the container from the second argument (after ensure_container_second_arg processing)
+        container = None
+        if "container" in kwargs:
+            container = kwargs["container"]
+        elif len(args) >= 2:
+            container = args[1]
+
+        if container and hasattr(cls, "auth"):
+            # Load auth for this specific container's registry without reloading configs
+            cls.auth.ensure_auth_for_container(container)
+
+        return func(cls, *args, **kwargs)
+
+    return wrapper
+
+
 def retry(attempts=5, timeout=2):
     """
     A simple retry decorator

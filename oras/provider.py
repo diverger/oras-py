@@ -524,6 +524,8 @@ class Registry:
             raise e
         return outfile
 
+    @decorator.ensure_container_second_arg
+    @decorator.ensure_auth_second_arg
     def put_upload(
         self,
         blob: str,
@@ -569,8 +571,8 @@ class Registry:
             )
         return response
 
-    @decorator.ensure_container
-    @decorator.ensure_auth
+    @decorator.ensure_container_second_arg
+    @decorator.ensure_auth_second_arg
     def blob_exists(self, layer: dict, container: oras.container.Container) -> bool:
         """
         Check if a layer already exists in the registry.
@@ -610,6 +612,8 @@ class Registry:
             session_url = f"{prefix}{session_url}"
         return session_url
 
+    @decorator.ensure_container_second_arg
+    @decorator.ensure_auth_second_arg
     def chunked_upload(
         self,
         blob: str,
