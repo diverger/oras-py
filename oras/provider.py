@@ -702,6 +702,8 @@ class Registry:
         except Exception:
             pass
 
+    @decorator.ensure_container_second_arg
+    @decorator.ensure_auth_second_arg
     def upload_manifest(
         self,
         manifest: dict,
