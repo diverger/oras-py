@@ -884,7 +884,6 @@ class Registry:
         print(f"Successfully pushed {container}")
         return response
 
-    @decorator.ensure_auth
     def pull(
         self,
         target: str,
