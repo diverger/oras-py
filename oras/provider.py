@@ -254,6 +254,8 @@ class Registry:
             path_content.content = oras.defaults.unknown_config_media_type
         return path_content.path, path_content.content
 
+    @decorator.ensure_container_second_arg
+    @decorator.ensure_auth_second_arg
     def upload_blob(
         self,
         blob: str,
@@ -281,7 +283,6 @@ class Registry:
         :type chunk_size: int
         """
         blob = os.path.abspath(blob)
-        container = self.get_container(container)
 
         if self.blob_exists(layer, container):
             logger.debug(f'layer already exists: {layer["digest"]}')
