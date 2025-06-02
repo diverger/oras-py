@@ -25,6 +25,41 @@ jobs:
           REGISTRY_STORAGE_DELETE_ENABLED: "true"
     steps:
       - uses: actions/checkout@v4
+      - name: Make space for large files
+        run: |
+          sudo rm -rf /usr/share/dotnet
+          sudo rm -rf /usr/local/lib/android
+          sudo rm -rf /opt/ghc
+          sudo apt-get remove -y firefox || true
+          sudo apt-get remove -y google-chrome-stable || true
+          sudo apt purge openjdk-* || echo "OpenJDK is not installed"
+          sudo apt remove --autoremove openjdk-*  || echo "OpenJDK is not installed"
+          sudo apt purge oracle-java* || echo "Oracle Java is not installed"
+          sudo apt remove --autoremove adoptopenjdk-* || echo "Adopt open JDK is not installed"
+          sudo apt-get remove -y ant || echo "ant is not installed"
+          sudo rm -rf /opt/hostedtoolcache/Java_Adopt_jdk || true
+          sudo apt-get remove -y podman || echo "Podman is not installed"
+          sudo apt-get remove -y buildah || echo "Buidah is not installed"
+          sudo apt-get remove -y esl-erlang || echo "erlang is not installed"
+          sudo rm -rf /opt/google
+          sudo rm -rf /usr/share/az* /opt/az || true
+          sudo rm -rf /opt/microsoft
+          sudo rm -rf /opt/hostedtoolcache/Ruby
+          sudo apt-get remove -y swift || echo "swift is not installed"
+          sudo apt-get remove -y swig || echo "swig is not installed"
+          sudo apt-get remove -y texinfo || echo "texinfo is not installed"
+          sudo apt-get remove -y texlive || echo "texlive is not installed"
+          sudo apt-get remove -y r-base-core r-base || echo "R is not installed"
+          sudo rm -rf /opt/R
+          sudo rm -rf /usr/share/R
+          sudo rm -rf /opt/*.zip
+          sudo rm -rf /opt/*.tar.gz
+          sudo rm -rf /usr/share/*.zip
+          sudo rm -rf /usr/share/*.tar.gz
+          sudo rm -rf /opt/hhvm
+          sudo rm -rf /opt/hostedtoolcache/CodeQL
+          sudo rm -rf /opt/hostedtoolcache/node
+          sudo apt-get autoremove
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
