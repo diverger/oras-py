@@ -88,7 +88,7 @@ class AuthBackend:
             return True
         return False
 
-    @decorator.ensure_container
+    @decorator.ensure_container()
     def load_configs(self, container: container_type, configs: Optional[list] = None):
         """
         Load configs to discover credentials for a specific container.

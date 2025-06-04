@@ -7,94 +7,68 @@ from functools import wraps
 
 import requests.exceptions
 
-import oras.auth
 from oras.logger import logger
 
 
-def ensure_container(func):
+def ensure_container(container_arg_index=0):
     """
-    Ensure the first argument is a container, and not a string.
+    Ensure the specified argument is a container, and not a string.
+    
+    :param container_arg_index: The index of the container argument (0 for first arg, 1 for second arg)
+    :type container_arg_index: int
+    
+    Usage examples:
+        @ensure_container()     # Container is first argument (default)
+        @ensure_container(0)    # Container is first argument (explicit)
+        @ensure_container(1)    # Container is second argument
     """
+    def decorator(func):
+        @wraps(func)
+        def wrapper(cls, *args, **kwargs):
+            if "container" in kwargs:
+                kwargs["container"] = cls.get_container(kwargs["container"])
+            elif len(args) > container_arg_index:
+                # Convert the specified argument to a container
+                container = cls.get_container(args[container_arg_index])
+                # Rebuild args tuple with the converted container
+                args = args[:container_arg_index] + (container,) + args[container_arg_index + 1:]
+            return func(cls, *args, **kwargs)
 
-    @wraps(func)
-    def wrapper(cls, *args, **kwargs):
-        if "container" in kwargs:
-            kwargs["container"] = cls.get_container(kwargs["container"])
-        elif args:
-            container = cls.get_container(args[0])
-            args = (container, *args[1:])
-        return func(cls, *args, **kwargs)
-
-    return wrapper
+        return wrapper
+    return decorator
 
 
-def ensure_auth(func):
+def ensure_auth(container_arg_index=0):
     """
     Ensure authentication is loaded for the container's registry.
     This decorator should be applied after @ensure_container.
+
+    :param container_arg_index: The index of the container argument (0 for first arg, 1 for second arg)
+    :type container_arg_index: int
+
+    Usage examples:
+        @ensure_auth()          # Container is first argument (default)
+        @ensure_auth(0)         # Container is first argument (explicit)
+        @ensure_auth(1)         # Container is second argument
     """
+    def decorator(func):
+        @wraps(func)
+        def wrapper(cls, *args, **kwargs):
+            # Get the container from the specified argument position
+            container = None
+            if "container" in kwargs:
+                container = kwargs["container"]
+            elif len(args) > container_arg_index:
+                container = args[container_arg_index]
 
-    @wraps(func)
-    def wrapper(cls, *args, **kwargs):
-        # Get the container from the first argument (after ensure_container processing)
-        container = None
-        if "container" in kwargs:
-            container = kwargs["container"]
-        elif args:
-            container = args[0]
+            if container and hasattr(cls, "auth"):
+                # Load auth for this specific container's registry without reloading configs
+                cls.auth.ensure_auth_for_container(container)
 
-        if container and hasattr(cls, "auth"):
-            # Load auth for this specific container's registry without reloading configs
-            cls.auth.ensure_auth_for_container(container)
+            return func(cls, *args, **kwargs)
 
-        return func(cls, *args, **kwargs)
-
-    return wrapper
-
-
-def ensure_container_second_arg(func):
-    """
-    Ensure the second argument is a container, and not a string.
-    This is for PUT/SET-style methods where the pattern is:
-    method(self, data, container, ...)
-    """
-
-    @wraps(func)
-    def wrapper(cls, *args, **kwargs):
-        if "container" in kwargs:
-            kwargs["container"] = cls.get_container(kwargs["container"])
-        elif len(args) >= 2:
-            # Convert the second argument (index 1) to a container
-            container = cls.get_container(args[1])
-            args = (args[0], container, *args[2:])
-        return func(cls, *args, **kwargs)
-
-    return wrapper
-
-
-def ensure_auth_second_arg(func):
-    """
-    Ensure authentication is loaded for the container's registry.
-    This decorator should be applied after @ensure_container_second_arg.
-    For methods where container is the second argument.
-    """
-
-    @wraps(func)
-    def wrapper(cls, *args, **kwargs):
-        # Get the container from the second argument (after ensure_container_second_arg processing)
-        container = None
-        if "container" in kwargs:
-            container = kwargs["container"]
-        elif len(args) >= 2:
-            container = args[1]
-
-        if container and hasattr(cls, "auth"):
-            # Load auth for this specific container's registry without reloading configs
-            cls.auth.ensure_auth_for_container(container)
-
-        return func(cls, *args, **kwargs)
-
-    return wrapper
+        return wrapper
+    return decorator
 
 
 def retry(attempts=5, timeout=2):
@@ -119,8 +93,10 @@ def retry(attempts=5, timeout=2):
                             pass
                         raise ValueError(f"Issue with {res.request.url}: {res.reason}")
                     return res
-                except oras.auth.AuthenticationException as e:
-                    raise e
+                except Exception as e:
+                    # Handle AuthenticationException by checking class name to avoid circular import
+                    if e.__class__.__name__ == 'AuthenticationException':
+                        raise e
                 except requests.exceptions.SSLError:
                     raise
                 except Exception as e:

@@ -254,8 +254,8 @@ class Registry:
             path_content.content = oras.defaults.unknown_config_media_type
         return path_content.path, path_content.content
 
-    @decorator.ensure_container_second_arg
-    @decorator.ensure_auth_second_arg
+    @decorator.ensure_container(1)
+    @decorator.ensure_auth(1)
     def upload_blob(
         self,
         blob: str,
@@ -312,8 +312,8 @@ class Registry:
             response.status_code = 200
         return response
 
-    @decorator.ensure_container
-    @decorator.ensure_auth
+    @decorator.ensure_container()
+    @decorator.ensure_auth()
     def delete_tag(self, container: container_type, tag: str) -> bool:
         """
         Delete a tag for a container.
@@ -347,8 +347,8 @@ class Registry:
             raise RuntimeError("Delete was not successful: {response.json()}")
         return True
 
-    @decorator.ensure_container
-    @decorator.ensure_auth
+    @decorator.ensure_container()
+    @decorator.ensure_auth()
     def get_tags(self, container: container_type, N=None) -> List[str]:
         """
         Retrieve tags for a package.
@@ -412,8 +412,8 @@ class Registry:
             # use link + base url to continue with next page
             url = urllib.parse.urljoin(base_url, link)
 
-    @decorator.ensure_container
-    @decorator.ensure_auth
+    @decorator.ensure_container()
+    @decorator.ensure_auth()
     def get_blob(
         self,
         container: container_type,
@@ -449,8 +449,8 @@ class Registry:
         return oras.container.Container(name, registry=self.hostname)
 
     # Functions to be deprecated in favor of exposed ones
-    @decorator.ensure_container
-    @decorator.ensure_auth
+    @decorator.ensure_container()
+    @decorator.ensure_auth()
     def _download_blob(
         self, container: container_type, digest: str, outfile: str
     ) -> str:
@@ -495,8 +495,8 @@ class Registry:
         )
         return self.upload_blob(blob, container, layer, do_chunked)
 
-    @decorator.ensure_container
-    @decorator.ensure_auth
+    @decorator.ensure_container()
+    @decorator.ensure_auth()
     def download_blob(
         self, container: container_type, digest: str, outfile: str
     ) -> str:
@@ -527,8 +527,8 @@ class Registry:
             raise e
         return outfile
 
-    @decorator.ensure_container_second_arg
-    @decorator.ensure_auth_second_arg
+    @decorator.ensure_container(1)
+    @decorator.ensure_auth(1)
     def put_upload(
         self,
         blob: str,
@@ -574,8 +574,8 @@ class Registry:
             )
         return response
 
-    @decorator.ensure_container_second_arg
-    @decorator.ensure_auth_second_arg
+    @decorator.ensure_container(1)
+    @decorator.ensure_auth(1)
     def blob_exists(self, layer: dict, container: oras.container.Container) -> bool:
         """
         Check if a layer already exists in the registry.
@@ -615,8 +615,8 @@ class Registry:
             session_url = f"{prefix}{session_url}"
         return session_url
 
-    @decorator.ensure_container_second_arg
-    @decorator.ensure_auth_second_arg
+    @decorator.ensure_container(1)
+    @decorator.ensure_auth(1)
     def chunked_upload(
         self,
         blob: str,
@@ -705,8 +705,8 @@ class Registry:
         except Exception:
             pass
 
-    @decorator.ensure_container_second_arg
-    @decorator.ensure_auth_second_arg
+    @decorator.ensure_container(1)
+    @decorator.ensure_auth(1)
     def upload_manifest(
         self,
         manifest: dict,
@@ -959,8 +959,8 @@ class Registry:
             files.append(outfile)
         return files
 
-    @decorator.ensure_container
-    @decorator.ensure_auth
+    @decorator.ensure_container()
+    @decorator.ensure_auth()
     def get_manifest(
         self,
         container: container_type,
