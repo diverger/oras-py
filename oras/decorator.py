@@ -13,10 +13,10 @@ from oras.logger import logger
 def ensure_container(container_arg_index=0):
     """
     Ensure the specified argument is a container, and not a string.
-    
+
     :param container_arg_index: The index of the container argument (0 for first arg, 1 for second arg)
     :type container_arg_index: int
-    
+
     Usage examples:
         @ensure_container()     # Container is first argument (default)
         @ensure_container(0)    # Container is first argument (explicit)
@@ -93,10 +93,8 @@ def retry(attempts=5, timeout=2):
                             pass
                         raise ValueError(f"Issue with {res.request.url}: {res.reason}")
                     return res
-                except Exception as e:
-                    # Handle AuthenticationException by checking class name to avoid circular import
-                    if e.__class__.__name__ == 'AuthenticationException':
-                        raise e
+                except oras.auth.AuthenticationException as e:
+                    raise e
                 except requests.exceptions.SSLError:
                     raise
                 except Exception as e:
