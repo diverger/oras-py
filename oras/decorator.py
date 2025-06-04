@@ -7,6 +7,7 @@ from functools import wraps
 
 import requests.exceptions
 
+import oras.auth
 from oras.logger import logger
 
 
